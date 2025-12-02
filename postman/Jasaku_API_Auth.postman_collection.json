@@ -1,0 +1,109 @@
+{
+  "info": {
+    "name": "Jasaku API - Auth",
+    "description": "Postman collection with Register + Login tests for local XAMPP setup.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nama\": \"Raff Farand\",\n  \"email\": \"raff@test.com\",\n  \"password\": \"admin123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api.php?resource=auth&action=register",
+          "host": [ "{{baseUrl}}" ],
+          "path": [ "api.php" ],
+          "query": [
+            { "key": "resource", "value": "auth" },
+            { "key": "action", "value": "register" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "var json;",
+              "try { json = pm.response.json(); } catch(e) { pm.test('Response is JSON', () => { throw e; }); }",
+              "pm.test('Register response has data or success', function () { pm.expect(json).to.have.any.keys(['success','data','message']); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"raff@test.com\",\n  \"password\": \"admin123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api.php?resource=auth&action=login",
+          "host": [ "{{baseUrl}}" ],
+          "path": [ "api.php" ],
+          "query": [
+            { "key": "resource", "value": "auth" },
+            { "key": "action", "value": "login" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "var json = {};",
+              "try { json = pm.response.json(); } catch(e) { pm.test('Response is JSON', () => { throw e; }); }",
+              "pm.test('Login returns token or user', function () { pm.expect(json).to.have.any.keys(['token','data','success']); });",
+              "if (json.token) { pm.environment.set('token', json.token); pm.test('Saved token to environment', function () { pm.expect(pm.environment.get('token')).to.equal(json.token); }); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Services (auth optional)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api.php?resource=services",
+          "host": [ "{{baseUrl}}" ],
+          "path": [ "api.php" ],
+          "query": [
+            { "key": "resource", "value": "services" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response is JSON array or object', function () { var json = pm.response.json(); pm.expect(json).to.be.ok; });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

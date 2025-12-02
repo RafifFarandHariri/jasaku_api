@@ -1,0 +1,91 @@
+[
+  {
+    "goodhealth_path": "login.php",
+    "method": "POST",
+    "example_client_file": "lib/model/user.dart -> login()",
+    "suggested_router": {
+      "resource": "auth",
+      "action": "login",
+      "method": "POST"
+    },
+    "request_example": {
+      "username": "user@example.com",
+      "password": "secret",
+      "idPasien": "optional-id"
+    },
+    "response_example": {
+      "user": { "id_user": "123", "username": "user@example.com", "id_pasien": null },
+      "token": "<jwt-token>"
+    },
+    "notes": "Replace GoodHealth login.php with router call to auth.login. Supports both pasien and pegawai flows in GoodHealth code."
+  },
+  {
+    "goodhealth_path": "pasien/create.php",
+    "method": "POST",
+    "example_client_file": "lib/model/pasien.dart -> pasienCreate()",
+    "suggested_router": {
+      "resource": "users",
+      "action": "create_pasien",
+      "method": "POST"
+    },
+    "request_example": { "nama": "Nama", "hp": "0812...", "email": "x@y.com" },
+    "response_example": { "message": "Pasien created", "id_pasien": "42" },
+    "notes": "Create patient registration route. If your existing `users` handler already supports patient creation, map action accordingly."
+  },
+  {
+    "goodhealth_path": "pesan_obat/index.php",
+    "method": "GET",
+    "example_client_file": "lib/model/pesan_obat.dart -> fetchPesanObats()",
+    "suggested_router": { "resource": "orders", "action": "list", "method": "GET" },
+    "query_params": ["id_pasien", "is_selesai"],
+    "response_example": { "data": [{ "id_pesan_obat": "1", "waktu": "...", "total_biaya": "10000" }] },
+    "notes": "Map pesan_obat (orders) listing to orders list. Keep query param names consistent or translate on server."
+  },
+  {
+    "goodhealth_path": "pesan_obat/create.php",
+    "method": "POST",
+    "example_client_file": "lib/model/pesan_obat.dart -> pesanObatCreate()",
+    "suggested_router": { "resource": "orders", "action": "create", "method": "POST" },
+    "request_example": { "id_pasien": "..", "alamat": "..", "lat": "..", "lng": "..", "list_pesanan": "[...]", "total_biaya": "..", "ket": "..." },
+    "response_example": { "message": "Created", "id_pesan_obat": "99" }
+  },
+  {
+    "goodhealth_path": "pesan_obat/delete.php",
+    "method": "GET",
+    "example_client_file": "lib/model/pesan_obat.dart -> deletePesanObat()",
+    "suggested_router": { "resource": "orders", "action": "delete", "method": "POST_OR_GET" },
+    "query_params": ["id"],
+    "response_example": { "message": "Deleted" }
+  },
+  {
+    "goodhealth_path": "pesan_obat/update.php",
+    "method": "GET",
+    "example_client_file": "lib/model/pesan_obat.dart -> updatePesanObat()",
+    "suggested_router": { "resource": "orders", "action": "update", "method": "POST" },
+    "query_params": ["id"],
+    "notes": "GoodHealth uses GET but ideally update should be POST with a body. Bridge can accept GET and translate to router POST."
+  },
+  {
+    "goodhealth_path": "regis_poli/index.php",
+    "method": "GET",
+    "example_client_file": "lib/model/reg_poli.dart -> fetchRegisPolis()",
+    "suggested_router": { "resource": "registrations", "action": "list", "method": "GET" },
+    "query_params": ["id_pasien"],
+    "response_example": { "data": [{ "id_regis_poli": "1", "tgl_booking": "...", "poli": "Umum" }] }
+  },
+  {
+    "goodhealth_path": "regis_poli/create.php",
+    "method": "POST",
+    "example_client_file": "lib/model/reg_poli.dart -> regisPoliCreate()",
+    "suggested_router": { "resource": "registrations", "action": "create", "method": "POST" },
+    "request_example": { "id_pasien": "..", "id_dokter": "..", "tgl_booking": "..", "poli": ".." }
+  },
+  {
+    "goodhealth_path": "regis_poli/delete.php",
+    "method": "GET",
+    "example_client_file": "lib/model/reg_poli.dart -> deleteRegisPoli()",
+    "suggested_router": { "resource": "registrations", "action": "delete", "method": "POST_OR_GET" },
+    "query_params": ["id"],
+    "response_example": { "message": "Deleted" }
+  }
+]
