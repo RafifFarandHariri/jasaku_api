@@ -29,3 +29,23 @@ Client integration
 If you want, I can also:
 - Provide a sample SQL `CREATE TABLE` and `INSERT` statement to seed a test user.
 - Update the Flutter client to call this profile endpoint using `user id` instead of `email`.
+
+
+
+# Jasaku API
+
+Backend API untuk aplikasi Jasaku (Flutter).
+
+## Aplikasi Frontend
+Frontend aplikasi tersedia di: [jasaku](https://github.com/RafifFarandHariri/jasaku)
+
+## Teknologi
+- Node.js/Express.js
+- Database: [sesuaikan]
+
+## API Endpoints
+[daftar endpoint]
+
+## Menjalankan dengan Frontend
+1. Clone repo frontend: `git clone https://github.com/RafifFarandHariri/jasaku`
+2. Setup environment sesuai kebutuhan
