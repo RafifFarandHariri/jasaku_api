@@ -14,21 +14,29 @@ function handleOrdersResource($pdo, $method, $id, $input) {
             respond($stmt->fetchAll());
         }
 
-        // Optional filter by sellerId (return orders for a specific seller)
-        if (isset($_GET['sellerId']) && !isset($_GET['count'])) {
-            $stmt = $pdo->prepare('SELECT * FROM orders WHERE sellerId = ? ORDER BY orderDate DESC');
-            $stmt->execute([$_GET['sellerId']]);
+        // Optional filter by sellerId OR sellerName (return orders for a specific seller)
+        if ((isset($_GET['sellerId']) || isset($_GET['sellerName'])) && !isset($_GET['count'])) {
+            if (isset($_GET['sellerId'])) {
+                $stmt = $pdo->prepare('SELECT * FROM orders WHERE sellerId = ? ORDER BY orderDate DESC');
+                $stmt->execute([$_GET['sellerId']]);
+            } else {
+                // allow querying by sellerName when sellerId is not provided
+                $stmt = $pdo->prepare('SELECT * FROM orders WHERE sellerName = ? ORDER BY orderDate DESC');
+                $stmt->execute([$_GET['sellerName']]);
+            }
             respond($stmt->fetchAll());
         }
 
-        // Count incoming orders for a provider/seller: ?sellerId=...&count=1
-        if (isset($_GET['sellerId']) && isset($_GET['count'])) {
+        // Count incoming orders for a provider/seller: ?sellerId=...&count=1 or ?sellerName=...&count=1
+        if ((isset($_GET['sellerId']) || isset($_GET['sellerName'])) && isset($_GET['count'])) {
+            $sellerParam = isset($_GET['sellerId']) ? $_GET['sellerId'] : $_GET['sellerName'];
+            $field = isset($_GET['sellerId']) ? 'sellerId' : 'sellerName';
             if (isset($_GET['status'])) {
-                $stmt = $pdo->prepare('SELECT COUNT(*) as c FROM orders WHERE sellerId = ? AND status = ?');
-                $stmt->execute([$_GET['sellerId'], $_GET['status']]);
+                $stmt = $pdo->prepare("SELECT COUNT(*) as c FROM orders WHERE $field = ? AND status = ?");
+                $stmt->execute([$sellerParam, $_GET['status']]);
             } else {
-                $stmt = $pdo->prepare('SELECT COUNT(*) as c FROM orders WHERE sellerId = ?');
-                $stmt->execute([$_GET['sellerId']]);
+                $stmt = $pdo->prepare("SELECT COUNT(*) as c FROM orders WHERE $field = ?");
+                $stmt->execute([$sellerParam]);
             }
             $row = $stmt->fetch();
             respond(['count' => (int)($row['c'] ?? 0)]);
