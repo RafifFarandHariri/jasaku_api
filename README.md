@@ -49,3 +49,8 @@ Frontend aplikasi tersedia di: [jasaku](https://github.com/RafifFarandHariri/jas
 ## Menjalankan dengan Frontend
 1. Clone repo frontend: `git clone https://github.com/RafifFarandHariri/jasaku`
 2. Setup environment sesuai kebutuhan
+
+<img width="1454" height="879" alt="Screenshot 2025-12-05 140210" src="https://github.com/user-attachments/assets/81829f00-9735-4372-b988-4fd402bc3dcc" />
+
+
+
